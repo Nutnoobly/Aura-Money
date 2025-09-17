@@ -5,6 +5,12 @@ import bcrypt
 
 # db connector
 def ConnectorMysql():
+    """
+    Connects to the MySQL database and returns a connection object.
+
+    Raises:
+        RuntimeError: if there is an error connecting to the database.
+    """
     try:
         db = mysql.connector.connect(
                 host="localhost",
@@ -18,6 +24,15 @@ def ConnectorMysql():
 
 # method for fetch all data from database
 def get_data():
+    """
+    Fetches all data from the user table in the database.
+
+    Returns:
+        list: A list of dictionaries containing the user data. Each dictionary contains the user's id, username, password, and email.
+
+    Raises:
+        RuntimeError: if there is an error connecting to the database or fetching the data.
+    """
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
@@ -40,6 +55,20 @@ def get_data():
 
 # method register with username , password (encrypt with bcrypt function) and email
 def register_db(username , password , email):
+    """
+    Registers a new user with a username, password, and email.
+
+    Parameters:
+        username (str): The username of the new user.
+        password (str): The password of the new user.
+        email (str): The email of the new user.
+
+    Returns:
+        tuple: A tuple containing a JSON response and a status code. The JSON response contains a success message and the status code is 200.
+
+    Raises:
+        RuntimeError: if there is an error connecting to the database or registering the user.
+    """
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
@@ -54,6 +83,19 @@ def register_db(username , password , email):
 
 # method login with email and password
 def login_db(email , password):
+    """
+    Logs in a user with their email and password.
+
+    Parameters:
+        email (str): The email of the user.
+        password (str): The password of the user.
+
+    Returns:
+        tuple: A tuple containing a JSON response and a status code. The JSON response contains a success message and the status code is 200.
+
+    Raises:
+        RuntimeError: if there is an error connecting to the database or logging in the user.
+    """
     try:
         db = ConnectorMysql()
         cursor = db.cursor()
@@ -74,4 +116,3 @@ def login_db(email , password):
         return jsonify({"error": "Email doesn't exist!"}), 401
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
-    

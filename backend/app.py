@@ -29,12 +29,24 @@ jwt = JWTManager(app)
 
 # for test api is working?
 @app.route('/')
-def hello_world():  
-   return 'Hello World' 
+def hello_world():
+    """
+    Test API is working
+    Returns:
+        str: Hello World
+    """
+    return 'Hello World'
 
 # example of get_data method
 @app.route('/data' , methods=['GET'])
 def data():
+    """
+    Get all data from user table in database
+    Returns:
+        json: All data from user table
+    Raises:
+        Exception: If there is an error in database
+    """
     try:
         jsonData = database.get_data()
         return jsonify(jsonData)
@@ -45,6 +57,17 @@ def data():
 # register api use function register_db from ./database.py (finished)
 @app.route('/register' , methods=["POST"])
 def register():
+    """
+    Register new user
+    Returns:
+        json: Message if register successfull or error message
+    Raises:
+        Exception: If there is an error in database
+    Parameters:
+        username (str): Username of new user
+        password (str): Password of new user
+        email (str): Email of new user
+    """
     try:
         data = request.get_json() # get data from header (json file)
         username = data.get("username")
@@ -59,6 +82,16 @@ def register():
 # login method use fuction login_db from ./database.py (not finished)
 @app.route('/login' , methods=["POST"])
 def login():
+    """
+    Login user
+    Returns:
+        json: Message if login successfull or error message
+    Raises:
+        Exception: If there is an error in database
+    Parameters:
+        email (str): Email of user
+        password (str): Password of user
+    """
     try:
         data = request.get_json() # get data from header (json file)
         email = data.get("email")
@@ -77,6 +110,11 @@ def login():
 # logout method
 @app.route("/logout", methods=["GET"])
 def logout():
+    """
+    Logout user
+    Returns:
+        json: Message if logout successfull
+    """
     response = jsonify({"msg": "logout successful"})
     unset_jwt_cookies(response)
     return response
@@ -85,8 +123,14 @@ def logout():
 @app.route("/protected")
 @jwt_required()
 def protected():
+    """
+    A protected endpoint which can only be accessed if a valid JWT is provided.
+
+    Returns:
+        json: A simple JSON response with a message indicating that the request was successful
+    """
     return jsonify(foo="bar")
 
 # running file
 if __name__ == '__main__':
-   app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)

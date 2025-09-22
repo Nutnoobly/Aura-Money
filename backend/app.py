@@ -59,7 +59,7 @@ def data():
 @app.route('/register' , methods=["POST"])
 def register():
     """
-    Register new user
+    Register new users
     Returns:
         json: Message if register successfull or error message
     Raises:

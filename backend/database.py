@@ -43,7 +43,7 @@ def get_data():
             data = []
             for x in result:
                 arr = {
-                    "id" : x[0],
+                    "user_id" : x[0],
                     "username" : x[1],
                     "password" : x[2],
                     "email" : x[3]
@@ -81,6 +81,18 @@ def register_db(username , password , email):
     except Exception as err:
         raise RuntimeError(f"Database error: {err}")
 
+# method get user from email
+def get_from_email(email):
+    try:
+        db = ConnectorMysql()
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT user_id, username, email FROM user WHERE email=%s", (email,))
+        user = cursor.fetchone()
+        cursor.close()
+        return user
+    except Exception as err:
+        raise RuntimeError(f"Database error: {err}")
+
 # method login with email and password
 def login_db(email , password):
     """
@@ -105,13 +117,13 @@ def login_db(email , password):
         if len(result) > 0:
             for x in result:
                 arr = {
-                    "id" : x[0],
+                    "user_id" : x[0],
                     "username" : x[1],
                     "password" : x[2],
                     "email" : x[3]
                 }
             if bcrypt.checkpw(password.encode("utf-8") , arr['password'].encode("utf-8")):
-                return arr['username'], 200
+                return arr['email'], 200
             return jsonify({"error": "Wrong password!"}), 401
         return jsonify({"error": "Email doesn't exist!"}), 401
     except Exception as err:
